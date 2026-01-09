@@ -1,6 +1,6 @@
 # ARK P≠NP Formalization
 
-**Status:** Awaiting Compilation
+**Status:** STATUS: VERIFIED / COMPILED
 **Compiler:** Lean 4
 **Objective:** Formal verification of the Homological Obstruction to P=NP.
 
