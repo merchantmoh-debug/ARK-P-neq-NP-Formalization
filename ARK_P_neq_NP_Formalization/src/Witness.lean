@@ -20,10 +20,28 @@ def f_val (x : E3) : ℝ :=
   ((x 0)^2 - 1)^2 + ((x 1)^2 - 1)^2 + ((x 2)^2 - 1)^2 +
   lambda * (x 0 * x 1 + x 1 * x 2 + x 2 * x 0)
 
+lemma contDiff_coord (i : Fin 3) : ContDiff ℝ 2 (fun (x : E3) => x i) := by
+  let L : E3 →ₗ[ℝ] ℝ := {
+    toFun := fun x => x i
+    map_add' := fun x y => rfl
+    map_smul' := fun c x => rfl
+  }
+  have hL : Continuous L := by
+     -- L is linear and domain is Finite Dimensional.
+     exact L.continuous_of_finiteDimensional
+
+  let CL : E3 →L[ℝ] ℝ := {
+    toLinearMap := L
+    cont := hL
+  }
+  exact CL.contDiff
+
 -- Smoothness is guaranteed for polynomials
 def f_witness : PotentialFunction E3 := {
   val := f_val
-  smooth := by sorry
+  smooth := by
+    unfold f_val
+    repeat (first | apply ContDiff.add | apply ContDiff.sub | apply ContDiff.mul | apply ContDiff.pow | apply contDiff_const | apply contDiff_coord)
 }
 
 -- 2. VERIFICATION OF MULTI-WELL STRUCTURE
