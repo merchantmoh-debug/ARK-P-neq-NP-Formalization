@@ -1,0 +1,17 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs": "dc4ec81535868f45.o",
+ "log":
+ [{"message":
+   ".> /home/jules/.elan/toolchains/leanprover--lean4---v4.27.0-rc1/bin/clang -c -o /app/.lake/build/ir/ARK_Core/CalculusFact.c.o.export /app/.lake/build/ir/ARK_Core/CalculusFact.c -I /home/jules/.elan/toolchains/leanprover--lean4---v4.27.0-rc1/include -fstack-clash-protection -fwrapv -fPIC -fvisibility=hidden -Wno-unused-command-line-argument --sysroot /home/jules/.elan/toolchains/leanprover--lean4---v4.27.0-rc1 -nostdinc -isystem /home/jules/.elan/toolchains/leanprover--lean4---v4.27.0-rc1/include/clang -O3 -DNDEBUG -DLEAN_EXPORTING",
+   "level": "trace"}],
+ "inputs":
+ [["ARK_Core.CalculusFact:c",
+   [["/app/.lake/build/ir/ARK_Core/CalculusFact.c", "08c2ee0c713d8c02"],
+    ["Lean 4.27.0, commit 2fcce7258eeb6e324366bc25f9058293b04b7547",
+     "6f43b597efea5d4c"]]],
+  ["Lean 4.27.0, commit 2fcce7258eeb6e324366bc25f9058293b04b7547",
+   "6f43b597efea5d4c"],
+  ["traceArgs: #[-O3, -DNDEBUG, -DLEAN_EXPORTING]", "c1efb66122fb2b9a"],
+  ["x86_64-unknown-linux-gnu", "53a0e8937c307c28"]],
+ "depHash": "d282ef46e9d94295"}
