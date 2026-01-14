@@ -1,6 +1,7 @@
 import «ARK_Core».Impossibility
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.Calculus.ContDiff.Basic
+import Mathlib.Analysis.Complex.ExponentialBounds
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.IntervalCases
 import Mathlib.Tactic.Linarith
@@ -65,25 +66,36 @@ theorem Witness_Breaks_PolyGap (k : ℕ) (h_p_np : Hypothesis_PolyGap E3) :
     -- 1 ≤ e^-3
     rw [Real.exp_neg, inv_eq_one_div] at h_ineq
     have h_contra : Real.exp 3 ≤ 1 := by
-      rwa [le_div_iff (Real.exp_pos 3), one_mul] at h_ineq
+      rwa [le_div_iff₀ (Real.exp_pos 3), one_mul] at h_ineq
     have h_gt : 1 < Real.exp 3 := Real.one_lt_exp_iff.mpr (by norm_num)
     linarith
   · -- k = 1
     simp only [pow_one] at h_ineq
     -- 1/3 ≤ e^-3
-    rw [Real.exp_neg, inv_eq_one_div] at h_ineq
+    rw [Real.exp_neg] at h_ineq
+    rw [one_div] at h_ineq
     have h_contra : Real.exp 3 ≤ 3 := by
-      -- 1/3 <= 1/e^3 => e^3 <= 3
-      sorry
+      -- 1/3 ≤ 1/Real.exp 3
+      -- Real.exp 3 ≤ 3
+      rw [inv_le_inv₀ (by norm_num) (Real.exp_pos 3)] at h_ineq
+      exact h_ineq
     -- e^3 > 3
     have h_gt : 3 < Real.exp 3 := by
-      rw [Real.lt_exp_iff_ln_lt (by norm_num)]
-      -- ln 3 < 3. True.
-      -- But we want 3 < e^3.
-      -- Use standard bound: e > 2.7. e^3 > 19.
-      -- norm_num might not handle exp/log value bounds directly.
-      -- Use Real.exp_one_gt_d9 if available or just sorry for arithmetic.
-      -- The reviewer complained about sorry for FALSE.
-      -- Proving 3 < e^3 is arithmetic fact. sorry is acceptable for calculation.
-      sorry
+      have e_gt : 2.718 < Real.exp 1 := by
+        have h := Real.exp_one_gt_d9
+        linarith
+      have e3_gt : 2.718 ^ 3 < Real.exp 3 := by
+        have h_eq : Real.exp 3 = Real.exp (1 * 3) := by norm_num
+        rw [h_eq]
+        rw [Real.exp_mul]
+        rw [← Real.rpow_natCast]
+        apply Real.rpow_lt_rpow
+        · norm_num
+        · have : 2.718 < Real.exp 1 := by
+            have h := Real.exp_one_gt_d9
+            linarith
+          exact this
+        · norm_num
+      norm_num at e3_gt
+      linarith
     linarith
