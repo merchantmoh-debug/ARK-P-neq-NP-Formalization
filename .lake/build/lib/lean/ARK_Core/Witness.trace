@@ -1,8 +1,8 @@
 {"synthetic": false,
  "schemaVersion": "2025-09-10",
  "outputs":
- {"o": ["cb7e4f0d51c46b1a.olean"],
-  "i": "394f2a3e5f22220a.ilean",
+ {"o": ["a52e7656a69ddd8b.olean"],
+  "i": "742b65c1555ebeeb.ilean",
   "c": "b2153b114dac88bf.c"},
  "log":
  [{"message":
@@ -10,12 +10,10 @@
    "level": "trace"},
   {"message": "src/ARK_Core/Witness.lean:29:4: declaration uses 'sorry'",
    "level": "warning"},
-  {"message": "src/ARK_Core/Witness.lean:37:8: declaration uses 'sorry'",
-   "level": "warning"},
-  {"message": "src/ARK_Core/Witness.lean:41:8: declaration uses 'sorry'",
+  {"message": "src/ARK_Core/Witness.lean:42:8: declaration uses 'sorry'",
    "level": "warning"},
   {"message":
-   "src/ARK_Core/Witness.lean:58:40: unused variable `h_p_np`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`",
+   "src/ARK_Core/Witness.lean:59:40: unused variable `h_p_np`\n\nNote: This linter can be disabled with `set_option linter.unusedVariables false`",
    "level": "warning"}],
  "inputs":
  [["ARK_Core.Witness:deps",
@@ -58,7 +56,7 @@
       ["module plugins", "00000000000006bb"]]]]],
   ["Lean 4.27.0, commit 2fcce7258eeb6e324366bc25f9058293b04b7547",
    "6f43b597efea5d4c"],
-  ["/app/src/ARK_Core/Witness.lean", "8af303063423eb59"],
+  ["/app/src/ARK_Core/Witness.lean", "d100c86fb7659b3c"],
   ["options", "00000000000006bb"],
   ["Module.leanArgs: #[]", "00000000000006bb"]],
- "depHash": "f4290f884ff3430b"}
+ "depHash": "e74465207876a111"}

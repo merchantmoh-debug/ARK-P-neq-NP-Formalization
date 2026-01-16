@@ -35,7 +35,8 @@ def f_witness : PotentialFunction E3 := {
 
 -- Symmetry: V(-x) = V(x)
 theorem witness_symm (x : E3) : f_witness.val (-x) = f_witness.val x := by
-  sorry -- Algebra
+  dsimp [f_witness, f_val]
+  simp
 
 -- Barrier Height check
 theorem witness_is_frustrated : IsFrustrated f_witness := by
