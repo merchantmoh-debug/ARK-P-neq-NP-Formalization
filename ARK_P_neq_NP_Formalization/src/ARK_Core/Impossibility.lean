@@ -55,10 +55,10 @@ theorem p_neq_np_proven : (n E > 1000) → ¬ Hypothesis_PolyGap E := by
     -- Invert to get 1/n^k > e^-n
     have h_inv : Real.exp (-n E) < (1 : ℝ) / (n E ^ k : ℝ) := by
       rw [Real.exp_neg, one_div]
-      rw [inv_lt_inv]
+      rw [inv_lt_inv₀]
       · exact h_strict
       · exact Real.exp_pos _
-      · apply Real.rpow_pos_of_pos
+      · apply pow_pos
         exact lt_of_le_of_lt (by norm_num) h_dim
 
     -- Contradiction with h_false (which says 1/n^k ≤ e^-n)

@@ -1,5 +1,5 @@
 import «ARK_Core».Impossibility
-import Witness
+import «ARK_Core».Witness
 
 def main : IO Unit := do
   IO.println "=================================================="

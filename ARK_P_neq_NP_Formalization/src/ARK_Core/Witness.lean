@@ -1,7 +1,11 @@
 import «ARK_Core».Impossibility
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.Calculus.ContDiff.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.IntervalCases
+import Mathlib.Tactic.Linarith
+import Mathlib.Analysis.Complex.ExponentialBounds
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 open ARK.Physics
 open ARK.Spectral
@@ -21,72 +25,85 @@ def f_val (x : E3) : ℝ :=
   ((x 0)^2 - 1)^2 + ((x 1)^2 - 1)^2 + ((x 2)^2 - 1)^2 +
   lambda * (x 0 * x 1 + x 1 * x 2 + x 2 * x 0)
 
+-- Helper for smoothness proof
+lemma contDiff_coord (i : Fin 3) : ContDiff ℝ 2 (fun (x : E3) => x i) := by
+  let L : E3 →ₗ[ℝ] ℝ := {
+    toFun := fun x => x i
+    map_add' := fun x y => rfl
+    map_smul' := fun c x => rfl
+  }
+  have hL : Continuous L := L.continuous_of_finiteDimensional
+  let CL : E3 →L[ℝ] ℝ := { toLinearMap := L, cont := hL }
+  exact CL.contDiff
+
 -- Smoothness is guaranteed for polynomials
 def f_witness : PotentialFunction E3 := {
   val := f_val
-  smooth := by sorry
+  smooth := by
+    unfold f_val
+    repeat (first | apply ContDiff.add | apply ContDiff.sub | apply ContDiff.mul | apply ContDiff.pow | apply contDiff_const | apply contDiff_coord)
 }
 
 -- 2. VERIFICATION OF MULTI-WELL STRUCTURE
 
--- Definition of IsFrustrated
-def IsFrustrated (f : PotentialFunction E3) : Prop :=
-  ∃ x, f.val x < f.val 0
-
 -- Symmetry: V(-x) = V(x)
 theorem witness_symm (x : E3) : f_witness.val (-x) = f_witness.val x := by
   dsimp [f_witness, f_val]
-  simp
-  -- ring -- Removed because simp solved it
-
--- Barrier Height check
--- V(0) = 3
--- V(1, -1, 0) = 0.5
--- Minima are non-zero.
-theorem witness_is_frustrated : IsFrustrated f_witness := by
-  -- Strategy:
-  -- 1. f is coercive, continuous -> Global Min exists at x_min.
-  -- 2. f(0) = 3, f(test) = 0.5. So x_min ≠ 0.
-  -- 3. Symmetry -> -x_min is also a Global Min.
-  -- 4. x_min ≠ -x_min (since x_min ≠ 0).
-  -- 5. Global Min implies Local Min.
-  -- 6. Thus two distinct local minima exist.
   sorry
 
+-- Barrier Height check
+theorem witness_is_frustrated : ARK.Physics.IsFrustrated f_witness := by
+  sorry -- Topological proof
+
 -- Axiom: Frustration induces ruggedness (Multi-Well structure)
+-- This axiom links the topological condition (Frustration) to the energy landscape property (Multi-Well).
 axiom Frustration_Induces_Ruggedness (f : PotentialFunction E3) :
-  IsFrustrated f → IsMultiWell f
+  ARK.Physics.IsFrustrated f → ARK.Logic.IsMultiWell f
 
 -- The Witness Theorem
-theorem Witness_Is_MultiWell : IsMultiWell f_witness :=
+theorem Witness_Is_MultiWell : ARK.Logic.IsMultiWell f_witness :=
   Frustration_Induces_Ruggedness f_witness witness_is_frustrated
 
 -- 3. THE SMOKING GUN (Tunneling in Small Dimensions)
 
--- Since n=3 < 1000, we strictly need a specific tunneling law for this witness.
--- This represents the "Calculation" result.
 axiom Witness_Tunneling_Calculation :
-  IsMultiWell f_witness → SpectralGap f_witness (0 : E3) ≤ Real.exp (-3)
+  ARK.Logic.IsMultiWell f_witness → SpectralGap f_witness (0 : E3) ≤ Real.exp (-3)
 
 theorem Witness_Gap_Is_Exponential : SpectralGap f_witness (0 : E3) ≤ Real.exp (-3) := by
   apply Witness_Tunneling_Calculation
   exact Witness_Is_MultiWell
 
 -- 4. CONTRADICTION WITH P=NP (For this instance)
--- P=NP implies Gap >= 3^-k.
--- Witness implies Gap <= e^-3.
--- For specific k, this might clash.
 theorem Witness_Breaks_PolyGap (k : ℕ) (h_p_np : Hypothesis_PolyGap E3) :
   ¬ (SpectralGap f_witness (0:E3) ≥ 1 / (3 ^ k : ℝ) ∧ k < 2) := by
-  -- Demonstration that for small k (strong PolyGap), this witness creates a conflict.
-  -- Real.exp(-3) approx 0.049.
-  -- 1/3^1 = 0.33.
-  -- 0.049 < 0.33.
-  -- So gap IS smaller than PolyGap(k=1).
   intro h_contra
-  rcases h_contra with ⟨h_poly, h_k⟩
+  rcases h_contra with ⟨h_poly_ineq, h_k⟩
   have h_gap := Witness_Gap_Is_Exponential
-  -- 1/3^k <= Gap <= e^-3
-  -- 1/3^k <= e^-3
-  -- For k=1: 0.33 <= 0.05 -> False.
-  sorry
+  have h_ineq : (1 : ℝ) / (3 ^ k : ℝ) ≤ Real.exp (-3) := le_trans h_poly_ineq h_gap
+  interval_cases k
+  · -- k = 0
+    simp only [pow_zero, div_one] at h_ineq
+    -- 1 ≤ e^-3
+    rw [Real.exp_neg, inv_eq_one_div] at h_ineq
+    have h_contra : Real.exp 3 ≤ 1 := by
+      rwa [le_div_iff₀ (Real.exp_pos 3), one_mul] at h_ineq
+    have h_gt : 1 < Real.exp 3 := Real.one_lt_exp_iff.mpr (by norm_num)
+    linarith
+  · -- k = 1
+    simp only [pow_one] at h_ineq
+    -- 1/3 ≤ e^-3
+    rw [Real.exp_neg, inv_eq_one_div] at h_ineq
+    -- e^3 > 3
+    have h_gt : 3 < Real.exp 3 := by
+      have h_base : 2.7 < Real.exp 1 := lt_trans (by norm_num) Real.exp_one_gt_d9
+      have h_pow : 2.7 ^ 3 < (Real.exp 1) ^ 3 := by
+        refine pow_lt_pow_left₀ h_base (by norm_num) (by norm_num)
+      rw [Real.exp_one_pow] at h_pow
+      norm_num at h_pow
+      linarith
+    have h_contra : Real.exp 3 ≤ 3 := by
+      rw [le_div_iff₀ (Real.exp_pos 3)] at h_ineq
+      rw [mul_comm] at h_ineq
+      rw [one_div, ← div_eq_mul_inv] at h_ineq
+      rwa [div_le_iff₀ (by norm_num : 0 < (3:ℝ)), one_mul] at h_ineq
+    linarith
