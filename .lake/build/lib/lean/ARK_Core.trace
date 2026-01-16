@@ -21,9 +21,9 @@
          "1ee363168461cfde"],
         ["ARK_Core.SpectralGap:importAllArts", "5c4b4d95ce6e3f3c"],
         ["ARK_Core.Impossibility transitive imports (legacy)",
-         "cd8ca6c095d274c1"],
-        ["ARK_Core.Impossibility:importAllArts", "ed93ae439884b64c"],
-        ["ARK_Core.Witness transitive imports (legacy)", "a0dbdbb32c2e0295"],
+         "811173d6ab821077"],
+        ["ARK_Core.Impossibility:importAllArts", "088cc49e3e5ede9b"],
+        ["ARK_Core.Witness transitive imports (legacy)", "b39de5fb1335a625"],
         ["ARK_Core.Witness:importAllArts", "22dd96eb4aa28d0a"]]]]],
     ["libs",
      [["import dynlibs", "00000000000006bb"],
@@ -35,4 +35,4 @@
   ["/app/src/ARK_Core.lean", "3796114883d696a8"],
   ["options", "00000000000006bb"],
   ["Module.leanArgs: #[]", "00000000000006bb"]],
- "depHash": "d6e6f6437a07f71f"}
+ "depHash": "a1e4c4c8ef48c53b"}
