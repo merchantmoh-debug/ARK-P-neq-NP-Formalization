@@ -28,14 +28,23 @@ def f_val (x : E3) : ℝ :=
 -- Smoothness is guaranteed for polynomials
 def f_witness : PotentialFunction E3 := {
   val := f_val
-  smooth := by sorry
+  smooth := by
+    unfold f_val
+    repeat first
+      | apply ContDiff.add
+      | apply ContDiff.mul
+      | apply ContDiff.sub
+      | apply ContDiff.pow
+      | apply contDiff_const
+      | apply contDiff_apply
 }
 
 -- 2. VERIFICATION OF MULTI-WELL STRUCTURE
 
 -- Symmetry: V(-x) = V(x)
 theorem witness_symm (x : E3) : f_witness.val (-x) = f_witness.val x := by
-  sorry -- Algebra
+  dsimp [f_witness, f_val]
+  simp
 
 -- Barrier Height check
 theorem witness_is_frustrated : IsFrustrated f_witness := by
