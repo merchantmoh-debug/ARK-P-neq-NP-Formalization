@@ -78,6 +78,7 @@ If you accept the **Strong Church-Turing-Deutsch Principle**—that information 
 ### Verification
 
 ```bash
+lake exe cache get  # <--- CRITICAL: Downloads pre-compiled mathlib binaries
 lake build
 ```
 
