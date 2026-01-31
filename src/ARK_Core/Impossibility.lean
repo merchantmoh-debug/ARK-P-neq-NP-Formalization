@@ -29,6 +29,10 @@ axiom SAT_Topology :
 
 -- 3. THE COMPLEXITY HYPOTHESIS (P = NP)
 -- "P=NP implies Polynomial Mixing Time (Gap >= n^-k) for ALL problems."
+-- JUSTIFICATION: The Strong Church-Turing-Deutsch Principle implies that
+-- any efficient computation corresponds to a physical process.
+-- If the physical landscape forbids polynomial relaxation (Exponential Gap),
+-- then no physical algorithm (and thus no Turing Machine) can solve it efficiently.
 def Hypothesis_PolyGap (E : Type*) [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] : Prop :=
   ∀ (f : PotentialFunction E) (x : E), ∃ (k : ℕ), k ≤ 99 ∧ SpectralGap f x ≥ (1 / (n E ^ k : ℝ))
 
